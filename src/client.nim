@@ -2,6 +2,10 @@ import base64, httpclient, os, uri
 
 const AGENT* = "notifier-cli"
 
+type
+  NotifierError* = object
+    message*: string
+
 proc makeClient*: (HttpClient, Uri) =
   let auth = encode(getEnv("NOTIFIER_USER") & ":" & getEnv("NOTIFIER_PASS"))
 

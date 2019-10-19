@@ -1,8 +1,4 @@
-import httpclient, json, os, uri
-
-type
-  ClearError = object
-    message*: string
+import client, httpclient, json, os, uri
 
 proc clear*(client: HttpClient, base: Uri) =
 
@@ -11,18 +7,18 @@ proc clear*(client: HttpClient, base: Uri) =
 
   let localId = paramStr(2)
 
-  var endpoint = base / "message/clear"
+  let endpoint = base / "message/clear"
 
-  let jsonPayload = $(%{
+  let jsonPayload = %*{
     "localId": %localId
-  })
+  }
 
   let response = client.request(
     $endpoint,
     httpMethod = HttpPost,
-    body = jsonPayload
+    body = $jsonPayload
   )
 
   if code(response) != Http204:
-    let responseBody = to(parseJson(response.body), ClearError)
+    let responseBody = to(parseJson(response.body), NotifierError)
     quit("Failed to clear message. " & responseBody.message)

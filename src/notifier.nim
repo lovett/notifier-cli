@@ -2,12 +2,9 @@ import os, parseopt
 import authorize, clear, client, deauthorize, send, usage, version
 
 proc checkEnv() =
-  try:
-    doAssert existsEnv("NOTIFIER_URL")
-    doAssert existsEnv("NOTIFIER_USER")
-    doAssert existsEnv("NOTIFIER_PASS")
-  except AssertionError:
-    quit("Credentials not found in environment.")
+  for `var` in @["NOTIFIER_URL", "NOTIFIER_USER", "NOTIFIER_PASS"]:
+    if not existsEnv(`var`):
+      quit(`var` & " environment variable is not set")
 
 if paramCount() == 0:
   usage()
