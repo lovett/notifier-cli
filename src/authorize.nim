@@ -8,9 +8,6 @@ type
 proc authorize*() =
   stdout.write("Notifier Server URL: ")
 
-  # var server = initUri()
-  # parseUri(stdin.readLine(), server)
-  # let server = parseUri(stdin.readLine())
   var server = parseUri(stdin.readLine())
 
   if server.hostname == "":
@@ -30,7 +27,7 @@ proc authorize*() =
   stdout.write("Label (optional): ")
   let label = stdin.readLine()
 
-  let authUri = server / "auth"
+  let endpoint = server / "auth"
 
   let jsonPayload = $(%{
     "username": %username,
@@ -45,7 +42,7 @@ proc authorize*() =
   })
 
   let response = client.request(
-    $authUri,
+    $endpoint,
     httpMethod = HttpPost,
     body = jsonPayload
   )
