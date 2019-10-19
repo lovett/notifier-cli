@@ -1,5 +1,5 @@
 import os, parseopt
-import authorize, clear, deauthorize, send, usage, version
+import authorize, clear, client, deauthorize, send, usage, version
 
 proc checkEnv() =
   try:
@@ -21,18 +21,21 @@ for kind, key, value in getOpt():
       break
     of "clear", "retract":
       checkEnv()
-      clear()
+      let (client, base) = makeClient()
+      clear(client, base)
       break
     of "deauth", "deauthorize":
       checkEnv()
-      deauthorize()
+      let (client, base) = makeClient()
+      deauthorize(client, base)
       break
     of "help":
       usage()
       break
     of "send":
       checkEnv()
-      send()
+      let (client, base) = makeClient()
+      send(client, base)
       break
     of "version":
       version()

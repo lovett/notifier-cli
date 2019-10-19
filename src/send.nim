@@ -1,4 +1,4 @@
-import parseopt
+import httpclient, parseopt, uri
 
 var badge: string
 var body: string
@@ -30,6 +30,6 @@ for kind, key, value in getOpt():
     discard
 
 
-proc send*() =
+proc send*(client: HttpClient, base: Uri) =
   echo("Placeholder for send command")
   echo(title)

@@ -1,4 +1,4 @@
-import httpclient, json, terminal, uri
+import client, httpclient, json, terminal, uri
 
 type
   AuthToken* = object
@@ -38,7 +38,7 @@ proc authorize*() =
   let client = newHttpClient()
   client.headers = newHttpHeaders({
     "Content-Type": "application/json",
-    "User-Agent": "notifier-cli"
+    "User-Agent": AGENT
   })
 
   let response = client.request(
