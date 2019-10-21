@@ -1,35 +1,49 @@
-import httpclient, parseopt, uri
+import client, httpclient, json, parseopt, tables, uri
 
-var badge: string
-var body: string
-var expiration: string
-var group: string
-var localid: string
-var title: string
-var url: string
+var message = initTable[string, string]()
+message["title"] = "Untitled"
 
 for kind, key, value in getOpt():
   case kind
   of cmdLongOption, cmdShortOption:
     case key
     of "b", "body":
-      body = value
+      message["body"] = value
     of "e", "expire":
-       expiration = value
+      message["expiresAt"] = value
     of "i", "badge":
-      badge = value
+      message["badge"] = value
     of "g", "group":
-      group = value
+      message["group"] = value
     of "l", "localid":
-      localid = value
+      message["localId"] = value
     of "t", "title":
-      title = value
+      message["title"] = value
     of "u", "url":
-      url = value
-  else:
+      message["url"] = value
+    else:
+      discard
+  of cmdArgument, cmdEnd:
     discard
 
 
 proc send*(client: HttpClient, base: Uri) =
-  echo("Placeholder for send command")
-  echo(title)
+  let endpoint = base / "message"
+
+  let jsonPayload = %*message
+
+  let response = client.request(
+    $endpoint,
+    httpMethod = HttpPost,
+    body = $jsonPayload
+  )
+
+  let statusCode = code(response)
+
+  quitIfBadAuth(statusCode)
+
+  quitIfServerError(statusCode)
+
+  if code(response) != Http204:
+    let responseBody = to(parseJson(response.body), NotifierError)
+    quit(responseBody.message)
