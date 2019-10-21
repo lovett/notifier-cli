@@ -1,11 +1,26 @@
-import client, httpclient, json, os, uri
+import client, httpclient, json, parseopt, uri
+
+var localId: string
+
+for kind, key, value in getOpt():
+  case kind
+  of cmdLongOption, cmdShortOption:
+    case key
+    of "l", "localid":
+      localId = value
+    else:
+      discard
+  of cmdArgument:
+    localId = key
+  of cmdEnd:
+    discard
 
 proc clear*(client: HttpClient, base: Uri) =
 
-  if paramCount() < 2:
+  if localId == "":
     quit("Local ID not specified.")
 
-  let localId = paramStr(2)
+  echo(localId)
 
   let endpoint = base / "message/clear"
 
@@ -19,6 +34,12 @@ proc clear*(client: HttpClient, base: Uri) =
     body = $jsonPayload
   )
 
-  if code(response) != Http204:
+  let statusCode = code(response)
+
+  quitIfBadAuth(statusCode)
+
+  quitIfServerError(statusCode)
+
+  if statusCode != Http204:
     let responseBody = to(parseJson(response.body), NotifierError)
     quit("Failed to clear message. " & responseBody.message)

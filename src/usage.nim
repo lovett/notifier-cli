@@ -10,9 +10,16 @@ Commands:
 
   Aliases: retract
 
+  -l, --localid: Alternate format for specifying the local ID.
+
 - auth
   Request an authentication token. Prompts for server URL and returns
   a username and password to be stored in environment variables.
+
+- deauth
+  Delete the current authentication token at the server. Future calls
+  will fail until a new token has been requested using the auth command
+  and the corresponding environment variables have been updated.
 
 - send <arguments>
   Send a message to the notifier server using the credentials provided

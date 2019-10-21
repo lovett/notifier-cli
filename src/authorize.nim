@@ -47,9 +47,12 @@ proc authorize*() =
     body = jsonPayload
   )
 
-  if response.status != "200 OK":
-    quit("Failed to authentication with server.")
+  let statusCode = code(response)
 
+  quitIfServerError(statusCode)
+
+  if statusCode != Http200:
+    quit("Login failed.")
 
   let authToken = to(parseJson(response.body), AuthToken)
 

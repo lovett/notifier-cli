@@ -19,3 +19,11 @@ proc makeClient*: (HttpClient, Uri) =
   })
 
   result = (client, parseUri(getEnv("NOTIFIER_URL")))
+
+proc quitIfBadAuth* (statusCode: HttpCode) =
+  if statusCode == Http401:
+    quit("Bad username or password.")
+
+proc quitIfServerError* (statusCode: HttpCode) =
+  if is5xx(statusCode):
+    quit("Server error.")
