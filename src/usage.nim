@@ -25,12 +25,18 @@ Commands:
   Send a message to the notifier server using the credentials provided
   during auth.
 
-  -b, --body      : Set the body of the outgoing message.
-  -i, --badge     : Give the outgoing message a custom icon.
-  -g, --group     : A tag or category assiged to the outgoing message.
-  -l, --localid   : An ID to identify the outgoing message.
-  -t, --title     : Set the title of the outgoing message.
-  -u, --url       : Link the outgoing message to an external resource.
+  -b, --body          : Set the body of the outgoing message.
+  -d, --deliverystyle : If "whisper", equivalent to that command.
+  -i, --badge         : Give the outgoing message a custom icon.
+  -g, --group         : A tag or category assiged to the outgoing message.
+  -l, --localid       : An ID to identify the outgoing message.
+  -t, --title         : Set the title of the outgoing message.
+  -u, --url           : Link the outgoing message to an external resource.
+
+- whisper <arguments>
+  Same as send, except the message will not be relayed to
+  webhooks. Use this to send messages to the server and connected
+  clients, but no further.
 
 Aliases:
 - authorize: auth

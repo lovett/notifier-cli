@@ -2,6 +2,7 @@ import client, httpclient, json, parseopt, tables, uri
 
 var message = initTable[string, string]()
 message["title"] = "Untitled"
+message["deliveryStyle"] = "normal"
 
 for kind, key, value in getOpt():
   case kind
@@ -9,6 +10,8 @@ for kind, key, value in getOpt():
     case key
     of "b", "body":
       message["body"] = value
+    of "d", "deliverystyle":
+      message["deliveryStyle"] = value
     of "e", "expire":
       message["expiresAt"] = value
     of "i", "badge":
@@ -47,3 +50,7 @@ proc send*(client: HttpClient, base: Uri) =
   if code(response) != Http204:
     let responseBody = to(parseJson(response.body), NotifierError)
     quit(responseBody.message)
+
+proc whisper*(client: HttpClient, base: Uri) =
+  message["deliveryStyle"] = "whisper"
+  send(client, base)
