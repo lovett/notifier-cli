@@ -49,7 +49,7 @@ proc authorize*() =
 
   let statusCode = code(response)
 
-  quitIfServerError(statusCode)
+  quitOnHttpError(statusCode)
 
   if statusCode != Http200:
     quit("Login failed.")

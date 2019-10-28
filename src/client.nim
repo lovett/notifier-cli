@@ -20,10 +20,12 @@ proc makeClient*: (HttpClient, Uri) =
 
   result = (client, parseUri(getEnv("NOTIFIER_URL")))
 
-proc quitIfBadAuth* (statusCode: HttpCode) =
+proc quitOnHttpError* (statusCode: HttpCode) =
   if statusCode == Http401:
     quit("Bad username or password.")
 
-proc quitIfServerError* (statusCode: HttpCode) =
   if is5xx(statusCode):
     quit("Server error.")
+
+  if is4xx(statusCode):
+    quit("Server returned " & $statusCode)

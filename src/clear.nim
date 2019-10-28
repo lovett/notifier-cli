@@ -36,9 +36,7 @@ proc clear*(client: HttpClient, base: Uri) =
 
   let statusCode = code(response)
 
-  quitIfBadAuth(statusCode)
-
-  quitIfServerError(statusCode)
+  quitOnHttpError(statusCode)
 
   if statusCode != Http204:
     let responseBody = to(parseJson(response.body), NotifierError)

@@ -43,9 +43,7 @@ proc send*(client: HttpClient, base: Uri) =
 
   let statusCode = code(response)
 
-  quitIfBadAuth(statusCode)
-
-  quitIfServerError(statusCode)
+  quitOnHttpError(statusCode)
 
   if code(response) != Http204:
     let responseBody = to(parseJson(response.body), NotifierError)
