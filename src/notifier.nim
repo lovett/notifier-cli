@@ -2,9 +2,9 @@ import os, parseopt
 import authorize, clear, client, deauthorize, send, usage, version
 
 proc checkEnv() =
-  for `var` in @["NOTIFIER_URL", "NOTIFIER_USER", "NOTIFIER_PASS"]:
-    if not existsEnv(`var`):
-      quit(`var` & " environment variable is not set")
+  for key in @["NOTIFIER_URL", "NOTIFIER_USER", "NOTIFIER_PASS"]:
+    if not existsEnv(key):
+      quit(key & " environment variable is not set")
 
 if paramCount() == 0:
   usage()
