@@ -1,4 +1,4 @@
-import client, httpclient, json, parseopt, tables, uri
+import client, httpclient, json, net, parseopt, tables, uri
 
 var message = initTable[string, string]()
 message["title"] = "Untitled"
@@ -44,19 +44,22 @@ proc send*(client: HttpClient, base: Uri) =
 
   echo("JSON: " & $jsonPayload)
 
-  let response = client.request(
-    $endpoint,
-    httpMethod = HttpPost,
-    body = $jsonPayload
-  )
+  try:
+    let response = client.request(
+      $endpoint,
+      httpMethod = HttpPost,
+      body = $jsonPayload
+    )
+    let statusCode = code(response)
 
-  let statusCode = code(response)
+    quitOnHttpError(statusCode)
 
-  quitOnHttpError(statusCode)
+    if code(response) != Http204:
+      let responseBody = to(parseJson(response.body), NotifierError)
+      quit(responseBody.message)
 
-  if code(response) != Http204:
-    let responseBody = to(parseJson(response.body), NotifierError)
-    quit(responseBody.message)
+  except TimeoutError:
+    quitOnTimeout()
 
 proc whisper*(client: HttpClient, base: Uri) =
   message["deliveryStyle"] = "whisper"

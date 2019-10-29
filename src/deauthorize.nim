@@ -1,4 +1,4 @@
-import base64, client, httpclient, json, strutils, uri
+import base64, client, httpclient, json, net, strutils, uri
 
 proc deauthorize*(client: HttpClient, base: Uri) =
 
@@ -16,15 +16,19 @@ proc deauthorize*(client: HttpClient, base: Uri) =
     "value": authFields[1]
   }
 
-  let response = client.request(
-    $endpoint,
-    httpMethod = HttpPost,
-    body = $jsonPayload
-  )
+  try:
+    let response = client.request(
+      $endpoint,
+      httpMethod = HttpPost,
+      body = $jsonPayload
+    )
 
-  if code(response) != Http200:
-    let responseBody = to(parseJson(response.body), NotifierError)
-    quit("Failed to deauthorize. " & responseBody.message)
+    if code(response) != Http200:
+      let responseBody = to(parseJson(response.body), NotifierError)
+      quit("Failed to deauthorize. " & responseBody.message)
 
-  echo("export NOTIFIER_USER=")
-  echo("export NOTIFIER_PASS=")
+    echo("export NOTIFIER_USER=")
+    echo("export NOTIFIER_PASS=")
+
+  except TimeoutError:
+    quitOnTimeout()

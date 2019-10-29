@@ -1,4 +1,4 @@
-import client, httpclient, json, terminal, uri
+import client, httpclient, json, net, terminal, uri
 
 type
   AuthToken* = object
@@ -41,22 +41,26 @@ proc authorize*() =
     "User-Agent": AGENT
   })
 
-  let response = client.request(
-    $endpoint,
-    httpMethod = HttpPost,
-    body = jsonPayload
-  )
+  try:
+    let response = client.request(
+      $endpoint,
+      httpMethod = HttpPost,
+      body = jsonPayload
+    )
 
-  let statusCode = code(response)
+    let statusCode = code(response)
 
-  quitOnHttpError(statusCode)
+    quitOnHttpError(statusCode)
 
-  if statusCode != Http200:
-    quit("Login failed.")
+    if statusCode != Http200:
+      quit("Login failed.")
 
-  let authToken = to(parseJson(response.body), AuthToken)
+    let authToken = to(parseJson(response.body), AuthToken)
 
-  echo("\c\l")
-  echo("NOTIFIER_URL=", $server)
-  echo("NOTIFIER_USER=", authToken.key)
-  echo("NOTIFIER_PASS=", authToken.value)
+    echo("\c\l")
+    echo("NOTIFIER_URL=", $server)
+    echo("NOTIFIER_USER=", authToken.key)
+    echo("NOTIFIER_PASS=", authToken.value)
+
+  except TimeoutError:
+    quitOnTimeout()

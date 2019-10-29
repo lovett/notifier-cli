@@ -1,4 +1,4 @@
-import client, httpclient, json, parseopt, uri
+import client, httpclient, json, net, parseopt, uri
 
 var localId: string
 var verbose = false
@@ -34,16 +34,19 @@ proc clear*(client: HttpClient, base: Uri) =
 
   echo("JSON: " & $jsonPayload)
 
-  let response = client.request(
-    $endpoint,
-    httpMethod = HttpPost,
-    body = $jsonPayload
-  )
+  try:
+    let response = client.request(
+      $endpoint,
+      httpMethod = HttpPost,
+      body = $jsonPayload
+    )
+    let statusCode = code(response)
 
-  let statusCode = code(response)
+    quitOnHttpError(statusCode)
 
-  quitOnHttpError(statusCode)
+    if statusCode != Http204:
+       let responseBody = to(parseJson(response.body), NotifierError)
+       quit("Failed to clear message. " & responseBody.message)
 
-  if statusCode != Http204:
-    let responseBody = to(parseJson(response.body), NotifierError)
-    quit("Failed to clear message. " & responseBody.message)
+  except TimeoutError:
+    quitOnTimeout()

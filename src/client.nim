@@ -9,7 +9,7 @@ type
 proc makeClient*: (HttpClient, Uri) =
   let auth = encode(getEnv("NOTIFIER_USER") & ":" & getEnv("NOTIFIER_PASS"))
 
-  let client = newHttpClient()
+  let client = newHttpClient(timeout=3000)
 
   client.headers = newHttpHeaders({
     "Content-Type": "application/json",
@@ -29,3 +29,6 @@ proc quitOnHttpError* (statusCode: HttpCode) =
 
   if is4xx(statusCode):
     quit("Server returned " & $statusCode)
+
+proc quitOnTimeout* () =
+  quit("Timeout while trying to contact the server.")
