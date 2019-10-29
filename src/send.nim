@@ -4,6 +4,8 @@ var message = initTable[string, string]()
 message["title"] = "Untitled"
 message["deliveryStyle"] = "normal"
 
+var verbose = false
+
 for kind, key, value in getOpt():
   case kind
   of cmdLongOption, cmdShortOption:
@@ -24,6 +26,8 @@ for kind, key, value in getOpt():
       message["title"] = value
     of "u", "url":
       message["url"] = value
+    of "v", "verbose":
+      verbose = true
     else:
       discard
   of cmdArgument, cmdEnd:
@@ -33,7 +37,12 @@ for kind, key, value in getOpt():
 proc send*(client: HttpClient, base: Uri) =
   let endpoint = base / "message"
 
+  if verbose:
+    echo("Posting to " & $endpoint)
+
   let jsonPayload = %*message
+
+  echo("JSON: " & $jsonPayload)
 
   let response = client.request(
     $endpoint,

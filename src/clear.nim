@@ -1,6 +1,7 @@
 import client, httpclient, json, parseopt, uri
 
 var localId: string
+var verbose = false
 
 for kind, key, value in getOpt():
   case kind
@@ -8,6 +9,8 @@ for kind, key, value in getOpt():
     case key
     of "l", "localid":
       localId = value
+    of "v", "verbose":
+      verbose = true
     else:
       discard
   of cmdArgument:
@@ -15,18 +18,21 @@ for kind, key, value in getOpt():
   of cmdEnd:
     discard
 
-proc clear*(client: HttpClient, base: Uri) =
 
+proc clear*(client: HttpClient, base: Uri) =
   if localId == "":
     quit("Local ID not specified.")
 
-  echo(localId)
-
   let endpoint = base / "message/clear"
+
+  if verbose:
+    echo("Posting to " & $endpoint)
 
   let jsonPayload = %*{
     "localId": %localId
   }
+
+  echo("JSON: " & $jsonPayload)
 
   let response = client.request(
     $endpoint,

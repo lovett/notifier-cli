@@ -11,6 +11,7 @@ Commands:
   Aliases: retract
 
   -l, --localid: Alternate format for specifying the local ID.
+  -v, --verbose       : Display debugging messages about the HTTP request.
 
 - auth
   Request an authentication token. Prompts for server URL and returns
@@ -32,6 +33,7 @@ Commands:
   -l, --localid       : An ID to identify the outgoing message.
   -t, --title         : Set the title of the outgoing message.
   -u, --url           : Link the outgoing message to an external resource.
+  -v, --verbose       : Display debugging messages about the HTTP request.
 
 - whisper <arguments>
   Same as send, except the message will not be relayed to
