@@ -11,16 +11,15 @@ Commands:
   Aliases: retract
 
   -l, --localid: Alternate format for specifying the local ID.
-  -v, --verbose       : Display debugging messages about the HTTP request.
+  -v, --verbose: Display debugging messages about the HTTP request.
 
 - auth
-  Request an authentication token. Prompts for server URL and returns
-  a username and password to be stored in environment variables.
+  Request an authentication token. Prompts for server URL, username, and
+  password. Writes the authentication token to ~/.config/notifier.ini
 
 - deauth
   Delete the current authentication token at the server. Future calls
-  will fail until a new token has been requested using the auth command
-  and the corresponding environment variables have been updated.
+  will fail until a new token has been requested using the auth command.
 
 - send <arguments>
   Send a message to the notifier server using the credentials provided

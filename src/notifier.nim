@@ -1,11 +1,6 @@
 import os, parseopt
 import authorize, clear, client, deauthorize, send, usage, version
 
-proc checkEnv() =
-  for key in @["NOTIFIER_URL", "NOTIFIER_USER", "NOTIFIER_PASS"]:
-    if not existsEnv(key):
-      quit(key & " environment variable is not set")
-
 if paramCount() == 0:
   usage()
 
@@ -17,12 +12,10 @@ for kind, key, value in getOpt():
       authorize()
       break
     of "clear", "retract":
-      checkEnv()
       let (client, base) = makeClient()
       clear(client, base)
       break
     of "deauth", "deauthorize":
-      checkEnv()
       let (client, base) = makeClient()
       deauthorize(client, base)
       break
@@ -30,7 +23,6 @@ for kind, key, value in getOpt():
       usage()
       break
     of "send":
-      checkEnv()
       let (client, base) = makeClient()
       send(client, base)
       break
@@ -38,7 +30,6 @@ for kind, key, value in getOpt():
       version()
       break
     of "whisper":
-      checkEnv()
       let (client, base) = makeClient()
       whisper(client, base)
     else:

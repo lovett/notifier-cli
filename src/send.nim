@@ -42,7 +42,8 @@ proc send*(client: HttpClient, base: Uri) =
 
   let jsonPayload = %*message
 
-  echo("JSON: " & $jsonPayload)
+  if verbose:
+    echo("JSON: " & $jsonPayload)
 
   try:
     let response = client.request(

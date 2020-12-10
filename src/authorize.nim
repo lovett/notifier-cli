@@ -1,4 +1,4 @@
-import client, httpclient, json, net, terminal, uri
+import client, httpclient, json, net, os, parsecfg, terminal, uri
 
 type
   AuthToken* = object
@@ -57,10 +57,15 @@ proc authorize*() =
 
     let authToken = to(parseJson(response.body), AuthToken)
 
-    echo("\c\l")
-    echo("NOTIFIER_URL=", $server)
-    echo("NOTIFIER_USER=", authToken.key)
-    echo("NOTIFIER_PASS=", authToken.value)
+    let configDir = joinPath(os.getHomeDir(), ".config")
+
+    createDir(configDir)
+
+    var config = newConfig()
+    config.setSectionKey("","NOTIFIER_URL", $server)
+    config.setSectionKey("","NOTIFIER_USER", authToken.key)
+    config.setSectionKey("","NOTIFIER_PASS", authToken.value)
+    config.writeConfig(joinPath(configDir, "notifier.ini"))
 
   except TimeoutError:
     quitOnTimeout()

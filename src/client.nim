@@ -1,4 +1,4 @@
-import base64, httpclient, os, uri
+import base64, httpclient, os, parsecfg, uri
 
 const AGENT* = "notifier-cli"
 
@@ -7,7 +7,17 @@ type
     message*: string
 
 proc makeClient*: (HttpClient, Uri) =
-  let auth = encode(getEnv("NOTIFIER_USER") & ":" & getEnv("NOTIFIER_PASS"))
+  let configFile = joinPath(os.getHomeDir(), ".config", "notifier.ini")
+
+  if not fileExists(configFile):
+    quit("Credentials not found.")
+
+  let config = loadConfig(configFile)
+
+  let auth = encode(
+    config.getSectionValue("", "NOTIFIER_USER") & ":" &
+    config.getSectionValue("", "NOTIFIER_PASS")
+  )
 
   let client = newHttpClient(timeout=3000)
 
@@ -18,7 +28,7 @@ proc makeClient*: (HttpClient, Uri) =
     "Authorization": "Basic " & auth
   })
 
-  result = (client, parseUri(getEnv("NOTIFIER_URL")))
+  result = (client, parseUri(config.getSectionValue("", "NOTIFIER_URL")))
 
 proc quitOnHttpError* (statusCode: HttpCode) =
   if statusCode == Http401:
