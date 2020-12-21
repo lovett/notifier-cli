@@ -32,8 +32,9 @@ for kind, key, value in getOpt():
     of "whisper":
       let (client, base) = makeClient()
       whisper(client, base)
+      break
     else:
-      echo("Invalid command")
+      quit("Invalid command")
   of cmdLongOption, cmdShortOption:
     case key
     of "v", "version":
