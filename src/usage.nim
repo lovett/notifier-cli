@@ -27,6 +27,10 @@ Commands:
 
   -b, --body          : Set the body of the outgoing message.
   -d, --deliverystyle : If "whisper", equivalent to that command.
+  -e, --expires       : Auto-clear the message at a future point in time
+                        relative to the send time. Specified as one or more
+                        number-and-label pairs. Label can be "seconds",
+                        "minutes", "hours", or "days". Example: "30 minutes".
   -i, --badge         : Give the outgoing message a custom icon.
   -g, --group         : A tag or category assiged to the outgoing message.
   -l, --localid       : An ID to identify the outgoing message.
