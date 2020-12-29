@@ -32,6 +32,7 @@ proc authorize*() =
   let jsonPayload = $(%{
     "username": %username,
     "password": %password,
+    "persist": %("true"),
     "label": %label
   })
 
