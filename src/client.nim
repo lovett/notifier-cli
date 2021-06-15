@@ -19,7 +19,7 @@ proc makeClient*: (HttpClient, Uri) =
     config.getSectionValue("", "NOTIFIER_PASS")
   )
 
-  let client = newHttpClient(timeout=3000)
+  let client = newHttpClient(timeout=10000)
 
   client.headers = newHttpHeaders({
     "Content-Type": "application/json",
