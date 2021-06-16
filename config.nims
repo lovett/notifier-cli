@@ -37,7 +37,17 @@ task remoteCompile, "":
   switch("define", "release")
   let cachePath = nimCacheDir()
 
+  # This is a workaround for a problem with Nim v1.4 where remote compilation fails
+  # because nimbase.h is not available the way it was in Nim v1.0.x.
+  #
+  # The workaround consits of patching the compile script so that it
+  # references an rsyncd copy of the Nim lib directory rather than the
+  # equivalent path on the current host.
+  #
+  # See https://github.com/nim-lang/Nim/issues/13826
+  exec fmt"sed -i 's|/usr/local/src/nim-1.4.2/lib|/tmp/nim|' {cachePath}/compile_{exeName}.sh"
   exec fmt"rsync -az --delete {cachePath}/ {remoteHost}:/tmp/{exeName}"
+  exec fmt"rsync -az --delete /usr/local/src/nim-1.4.2/lib/ {remoteHost}:/tmp/nim"
   exec fmt"ssh {remoteHost} 'cd /tmp/{exeName} && /bin/sh compile_{exeName}.sh'"
 
 task remoteInstall, "":
