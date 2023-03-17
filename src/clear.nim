@@ -32,7 +32,8 @@ proc clear*(client: HttpClient, base: Uri) =
     "localId": %localId
   }
 
-  echo("JSON: " & $jsonPayload)
+  if verbose:
+    echo("JSON: " & $jsonPayload)
 
   try:
     let response = client.request(
