@@ -5,23 +5,25 @@ proc usage*() =
 Usage: notifier <command>
 
 Commands:
-- clear <localid>
+clear <localid>
   Retract a previously-sent message based on its local ID.
-
-  Aliases: retract
 
   -l, --localid: Alternate format for specifying the local ID.
   -v, --verbose: Display debugging messages about the HTTP request.
 
-- auth
+  Aliases: retract
+
+auth
   Request an authentication token. Prompts for server URL, username, and
   password. Writes the authentication token to ~/.config/notifier.ini
 
-- deauth
+  Aliases: authorize
+
+deauth
   Delete the current authentication token at the server. Future calls
   will fail until a new token has been requested using the auth command.
 
-- send <arguments>
+send <arguments>
   Send a message to the notifier server using the credentials provided
   during auth.
 
@@ -38,14 +40,10 @@ Commands:
   -u, --url           : Link the outgoing message to an external resource.
   -v, --verbose       : Display debugging messages about the HTTP request.
 
-- whisper <arguments>
+whisper <arguments>
   Same as send, except the message will not be relayed to
   webhooks. Use this to send messages to the server and connected
   clients, but no further.
-
-Aliases:
-- authorize: auth
-- retract  : clear
 
 Miscellaneous:
 -h, --help    : Display this message.
